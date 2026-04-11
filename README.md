@@ -24,10 +24,10 @@ Para fazer o sistema rodar sem banco de dados e de forma eficiente, aplicamos as
 
 Como nosso grupo tem 9 pessoas, dividimos o trabalho em frentes para ninguém pisar no código do outro:
 
-- Backend e Infraestrutura (Java e Estruturas): [Nome 1], [Nome 2], [Nome 3]
-- Arquitetura e Regras de Negócio (Validações): [Nome 4], [Nome 5]
-- UI Design (Telas no Figma): [Nome 6], [Nome 7]
-- Documentação e Vídeo: [Nome 8], [Nome 9]
+- Backend e Infraestrutura (Java e Estruturas): Davi, Clarisse, Caio
+- Arquitetura e Regras de Negócio (Validações): Luis, Andrei
+- UI Design (Telas no Figma): Joao, Danyel
+- Documentação e Vídeo: Alan, Antonio
 
 ## Como rodar o projeto
 
