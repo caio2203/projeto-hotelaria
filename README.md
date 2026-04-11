@@ -27,7 +27,7 @@ Como nosso grupo tem 9 pessoas, dividimos o trabalho em frentes para ninguém pi
 - Backend e Infraestrutura (Java e Estruturas): [Nome 1], [Nome 2], [Nome 3]
 - Arquitetura e Regras de Negócio (Validações): [Nome 4], [Nome 5]
 - UI Design (Telas no Figma): [Nome 6], [Nome 7]
-- Documentação, Jira e Vídeo: [Nome 8], [Nome 9]
+- Documentação e Vídeo: [Nome 8], [Nome 9]
 
 ## Como rodar o projeto
 
