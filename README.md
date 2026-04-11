@@ -32,7 +32,7 @@ Como nosso grupo tem 9 pessoas, dividimos o trabalho em frentes para ninguém pi
 ## Como rodar o projeto
 
 1. Faça o clone deste repositório na sua máquina:
-   git clone https://github.com/SeuUsuario/nome-do-repositorio.git
+   git clone https://github.com/caio2203/projeto-ed-hotelaria.git
 2. Abra a pasta do projeto na sua IDE (IntelliJ, Eclipse, VS Code, etc).
 3. Encontre o arquivo principal (Main.java) e rode a aplicação.
 4. O sistema vai abrir os menus de interação direto no terminal/console.
