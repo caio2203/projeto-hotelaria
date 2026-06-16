@@ -1,25 +1,16 @@
 package model;
 
 /**
- * Representa um funcionário do hotel — pode ser gerente ou recepcionista.
- * O nível de acesso define o que cada um pode fazer no sistema.
+ * O funcionário do hotel: gerente ou recepcionista. Quem diz o que ele pode
+ * fazer é o nível de acesso (por enquanto a gente só guarda; a regra de
+ * permissão em si fica pra parte do Luis/Andrei).
  *
- * @author Caio Goncalves Vieira
  * @version 1.0
  */
 public class Administrador extends Usuario {
 
     private NivelAcesso nivelAcesso;
 
-    /**
-     * Cria um administrador com seu respectivo nível.
-     *
-     * @param id          identificador único
-     * @param nome        nome completo
-     * @param login       login de acesso
-     * @param senha       senha de acesso
-     * @param nivelAcesso GERENTE ou RECEPCIONISTA
-     */
     public Administrador(int id, String nome, String login, String senha, NivelAcesso nivelAcesso) {
         super(id, nome, login, senha);
         this.nivelAcesso = nivelAcesso;

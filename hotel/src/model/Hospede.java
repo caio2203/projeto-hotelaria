@@ -3,13 +3,13 @@ package model;
 import java.util.Stack;
 
 /**
- * O cliente do hotel. Além dos dados pessoais, guarda um histórico
- * de estadias usando uma Pilha (Stack - LIFO).
+ * O cliente do hotel. Fora os dados pessoais, cada hóspede carrega o histórico
+ * das estadias dele numa Pilha (Stack do java.util, LIFO).
  *
- * A pilha faz sentido aqui porque o que mais interessa é a estadia
- * mais recente, e o peek() acessa o topo em O(1) sem precisar percorrer tudo.
+ * Usei pilha de propósito: o que a gente mais consulta é a última estadia, e
+ * com o peek() pego o topo na hora sem varrer a lista toda. A estadia mais nova
+ * sempre fica em cima.
  *
- * @author Caio Goncalves Vieira
  * @version 1.0
  */
 public class Hospede extends Usuario {
@@ -35,22 +35,14 @@ public class Hospede extends Usuario {
         this.historico = new Stack<>();
     }
 
-    /**
-     * Empilha a reserva finalizada no histórico.
-     * Chamado automaticamente pelo método finalizar() da Reserva.
-     *
-     * @param reserva a estadia que acabou de ser concluída
-     */
+    // não precisa chamar isso na mão: a própria Reserva chama quando faz o
+    // check-out (lá no finalizar()). Aqui é só empilhar a estadia que terminou.
     public void adicionarAoHistorico(Reserva reserva) {
         historico.push(reserva);
     }
 
-    /**
-     * Retorna a última estadia sem remover da pilha.
-     * Retorna null se o hóspede nunca ficou em nenhum hotel.
-     *
-     * @return a reserva mais recente, ou null
-     */
+    // só dá uma espiada no topo (não tira da pilha). Devolve null se o hóspede
+    // ainda não teve nenhuma estadia. Use esse aqui quando for só pra mostrar.
     public Reserva verUltimaEstadia() {
         if (historico.isEmpty()) {
             return null;
@@ -58,12 +50,8 @@ public class Hospede extends Usuario {
         return historico.peek();
     }
 
-    /**
-     * Remove e retorna a última estadia da pilha.
-     * Use com cuidado — prefira verUltimaEstadia() se só quiser consultar.
-     *
-     * @return a reserva do topo da pilha
-     */
+    // esse aqui remove de verdade do topo. Cuidado: se for só pra consultar,
+    // usa o verUltimaEstadia() em cima senão você acaba apagando do histórico.
     public Reserva removerUltimaEstadia() {
         if (historico.isEmpty()) {
             return null;

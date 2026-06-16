@@ -1,27 +1,22 @@
 package model;
 
+import java.io.Serializable;
+
 /**
- * Classe mãe de todos os usuários do sistema.
- * Hóspede e Administrador herdam daqui porque ambos têm login e senha.
+ * Classe mãe de quem usa o sistema. Tanto o Hospede quanto o Administrador
+ * herdam daqui porque os dois precisam de id, nome, login e senha - então
+ * não fazia sentido repetir tudo isso nas duas.
  *
- * @author Caio Goncalves Vieira
  * @version 1.0
  */
-public abstract class Usuario {
+public abstract class Usuario implements Serializable {
 
     private int id;
     private String nome;
     private String login;
     private String senha;
 
-    /**
-     * Cria um usuário com os dados de acesso básicos.
-     *
-     * @param id    identificador único
-     * @param nome  nome completo
-     * @param login nome de usuário para entrar no sistema
-     * @param senha senha de acesso
-     */
+    // as subclasses chamam esse super() pra preencher os dados de acesso comuns
     public Usuario(int id, String nome, String login, String senha) {
         this.id = id;
         this.nome = nome;

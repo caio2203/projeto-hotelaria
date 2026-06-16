@@ -1,17 +1,18 @@
 package model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Vincula um hóspede a um quarto em um período específico.
- * Aqui ficam as regras mais importantes do sistema: conflito de datas,
- * check-in, cancelamento e finalização.
+ * Liga um hóspede a um quarto num período. É aqui que mora a parte mais
+ * importante das regras: conflito de datas, check-in, cancelamento e check-out.
  *
- * @author Caio Goncalves Vieira
+ * Luis/Andrei: se forem apertar as validações de negócio, é nesta classe.
+ *
  * @version 1.0
  */
-public class Reserva {
+public class Reserva implements Serializable {
 
     private static final DateTimeFormatter FORMATO_DATA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
@@ -41,43 +42,38 @@ public class Reserva {
     }
 
     /**
-     * Verifica se esse intervalo de datas bate com outra reserva no mesmo quarto.
+     * Diz se o período passado encosta no período desta reserva (mesmo quarto).
      *
-     * A lógica é simples: dois intervalos [A, B] e [C, D] se sobrepõem quando
-     * C não está depois de B E A não está depois de D.
+     * O truque dos dois intervalos: [A,B] e [C,D] se cruzam quando C não passa
+     * de B E A não passa de D. Testei com datas coladas e funciona, mas se
+     * alguém achar um caso de borda esquisito me avisa.
      *
-     * @param entrada data de entrada da nova reserva
-     * @param saida   data de saída da nova reserva
-     * @return true se houver conflito
+     * @param entrada entrada da reserva nova
+     * @param saida   saída da reserva nova
+     * @return true se bater (tem conflito)
      */
     public boolean conflitaCom(LocalDate entrada, LocalDate saida) {
         return !saida.isBefore(this.dataEntrada) && !entrada.isAfter(this.dataSaida);
     }
 
-    /**
-     * Realiza o check-in: marca o quarto como ocupado e a reserva como ativa.
-     * Só faz sentido chamar isso quando a data de entrada chegou.
-     */
+    // check-in: bota o quarto como ocupado e a reserva como em andamento.
+    // a ideia é chamar quando o hóspede chega de fato (data de entrada).
     public void realizarCheckIn() {
         this.status = StatusReserva.EM_ANDAMENTO;
         this.quarto.setStatus(StatusQuarto.OCUPADO);
         System.out.println("Check-in realizado: " + hospede.getNome() + " no quarto " + quarto.getNumero());
     }
 
-    /**
-     * Cancela a reserva e libera o quarto imediatamente.
-     * Funciona tanto para reservas pendentes quanto ativas.
-     */
+    // cancela e já solta o quarto na hora. Tanto faz se a reserva tava
+    // pendente ou em andamento, funciona pros dois casos.
     public void cancelar() {
         this.status = StatusReserva.CANCELADA;
         this.quarto.setStatus(StatusQuarto.DISPONIVEL);
         System.out.println("Reserva #" + id + " cancelada. Quarto " + quarto.getNumero() + " liberado.");
     }
 
-    /**
-     * Finaliza a hospedagem no check-out: libera o quarto e
-     * empilha essa reserva no histórico do hóspede (Stack - LIFO).
-     */
+    // check-out: encerra a estadia, libera o quarto e joga a reserva no
+    // histórico do hóspede (a pilha). É o finalizar que empurra pra Stack.
     public void finalizar() {
         this.status = StatusReserva.CONCLUIDA;
         this.quarto.setStatus(StatusQuarto.DISPONIVEL);

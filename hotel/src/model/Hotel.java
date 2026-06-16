@@ -1,5 +1,6 @@
 package model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -7,23 +8,24 @@ import java.util.List;
 import java.util.Queue;
 
 /**
- * O coração do sistema. Cada hotel gerencia seu próprio inventário de quartos,
- * lista de reservas ativas e fila de espera.
+ * O coração do sistema. Cada hotel cuida do próprio estoque de quartos, das
+ * reservas e da fila de espera dele - um hotel não enxerga o do outro.
  *
- * Estruturas usadas:
- * - ArrayList para quartos e reservas (precisa iterar bastante)
- * - Queue (LinkedList) para a fila de espera (FIFO — quem chegou primeiro sai primeiro)
+ * Sobre as coleções (tudo java.util):
+ * - ArrayList pra quartos, reservas e hóspedes, porque a gente percorre muito;
+ * - Queue (LinkedList) pra fila de espera, que é FIFO mesmo: quem pediu primeiro
+ *   é o primeiro a ser chamado quando libera um quarto.
  *
- * @author Caio Goncalves Vieira
  * @version 1.0
  */
-public class Hotel {
+public class Hotel implements Serializable {
 
     private int id;
     private String nome;
     private String localizacao;
     private ArrayList<Quarto> quartos;
     private ArrayList<Reserva> reservas;
+    private ArrayList<Hospede> hospedes;
     private Queue<Hospede> filaEspera;
     private Administrador gerente;
     private ArrayList<Administrador> recepcionistas;
@@ -44,6 +46,7 @@ public class Hotel {
         this.localizacao = localizacao;
         this.quartos = new ArrayList<>();
         this.reservas = new ArrayList<>();
+        this.hospedes = new ArrayList<>();
         this.filaEspera = new LinkedList<>();
         this.recepcionistas = new ArrayList<>();
     }
@@ -62,22 +65,33 @@ public class Hotel {
         System.out.println("Quarto " + quarto.getNumero() + " adicionado ao hotel " + nome);
     }
 
+    /**
+     * Cadastra um hóspede no hotel para que ele possa fazer reservas.
+     *
+     * @param hospede o hóspede a ser cadastrado
+     */
+    public void adicionarHospede(Hospede hospede) {
+        hospedes.add(hospede);
+    }
+
+    public ArrayList<Hospede> getHospedes() {
+        return hospedes;
+    }
+
     // -------------------------------------------------------------------------
-    // Busca de disponibilidade (US02/T2)
+    // Busca de disponibilidade
     // -------------------------------------------------------------------------
 
     /**
-     * Percorre todos os quartos do hotel e devolve só os que estão livres
-     * para o período pedido.
+     * Devolve só os quartos que dá pra reservar no período pedido.
      *
-     * A lógica tem dois filtros:
-     * 1. Ignora quartos em manutenção.
-     * 2. Para cada quarto restante, verifica se existe alguma reserva ativa
-     *    que conflite com as datas — se não tiver, o quarto entra na lista.
+     * São dois filtros: primeiro tira os que estão em manutenção; depois, pra
+     * cada um que sobrou, olha se já tem reserva ativa batendo nas datas. Se
+     * não bater com nenhuma, o quarto entra na lista.
      *
-     * @param entrada data de check-in desejada
-     * @param saida   data de check-out desejada
-     * @return lista de quartos disponíveis no período
+     * @param entrada data de entrada desejada
+     * @param saida   data de saída desejada
+     * @return lista dos quartos livres no período
      */
     public List<Quarto> buscarQuartosDisponiveis(LocalDate entrada, LocalDate saida) {
         List<Quarto> disponiveis = new ArrayList<>();
@@ -113,20 +127,21 @@ public class Hotel {
     }
 
     // -------------------------------------------------------------------------
-    // Criação e armazenamento de reserva (US02/T3 e US07/T2 e US14/T5)
+    // Criação de reserva
     // -------------------------------------------------------------------------
 
     /**
-     * Tenta criar uma reserva para o hóspede no quarto e período informados.
+     * Tenta reservar o quarto pro hóspede no período pedido.
      *
-     * Se o quarto estiver disponível: cria a reserva e a guarda na lista do hotel.
-     * Se não estiver: coloca o hóspede na fila de espera (enqueue).
+     * Se o quarto tá livre: cria a reserva e guarda na lista. Se não tá: o
+     * hóspede entra na fila de espera e devolvo null. Quem chama (a tela) usa
+     * esse null pra saber que caiu na fila e não virou reserva.
      *
      * @param hospede  quem quer reservar
-     * @param quarto   qual quarto foi escolhido
-     * @param entrada  data de check-in
-     * @param saida    data de check-out
-     * @return a reserva criada, ou null se o hóspede foi para a fila
+     * @param quarto   o quarto escolhido
+     * @param entrada  data de entrada
+     * @param saida    data de saída
+     * @return a reserva criada, ou null se foi pra fila
      */
     public Reserva criarReserva(Hospede hospede, Quarto quarto, LocalDate entrada, LocalDate saida) {
         List<Quarto> disponiveis = buscarQuartosDisponiveis(entrada, saida);
@@ -143,12 +158,8 @@ public class Hotel {
         }
     }
 
-    /**
-     * Guarda a reserva na lista do hotel.
-     * Separado para poder ser chamado de fora quando necessário.
-     *
-     * @param reserva a reserva a ser armazenada
-     */
+    // deixei separado de propósito caso precisem inserir uma reserva já pronta
+    // de fora (importação, teste, etc.), sem passar pelo criarReserva.
     public void adicionarReserva(Reserva reserva) {
         reservas.add(reserva);
     }
@@ -157,27 +168,22 @@ public class Hotel {
     // Check-in e Check-out
     // -------------------------------------------------------------------------
 
-    /**
-     * Realiza o check-in da reserva: atualiza o status do quarto e da reserva.
-     *
-     * @param reserva a reserva que está entrando
-     */
+    // o hotel só repassa pra reserva quem faz o trabalho de verdade é ela.
+    // mantive o método aqui pra tela conversar sempre com o hotel, não com a reserva.
     public void realizarCheckIn(Reserva reserva) {
         reserva.realizarCheckIn();
     }
 
     /**
-     * Realiza o check-out: finaliza a hospedagem, libera o quarto
-     * e verifica se tem alguém na fila de espera.
+     * Check-out: encerra a estadia, libera o quarto e, se tiver gente na fila
+     * de espera, chama o próximo (tira o primeiro com poll, que é o dequeue).
      *
-     * Se tiver, remove o primeiro da fila (dequeue) e notifica.
-     *
-     * @param reserva a reserva que está sendo encerrada
+     * @param reserva a reserva que está encerrando
      */
     public void realizarCheckOut(Reserva reserva) {
         reserva.finalizar();
 
-        // vê se tem alguém esperando por um quarto nesse hotel
+        // liberou um quarto, então vê se tem alguém na fila esperando vaga
         if (!filaEspera.isEmpty()) {
             Hospede proximoDaFila = filaEspera.poll();
             System.out.println("Notificação: " + proximoDaFila.getNome()

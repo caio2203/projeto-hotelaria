@@ -1,3 +1,9 @@
+# Maven build output
+target/
+
+# Dados serializados gerados em runtime
+*.ser
+
 # Compiled class file
 *.class
 

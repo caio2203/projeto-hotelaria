@@ -3,13 +3,11 @@ package model;
 import java.util.ArrayList;
 
 /**
- * Gerenciador global do sistema — existe uma única instância (Singleton).
+ * O "guarda-tudo" do sistema. Tem uma instância só (Singleton), então em
+ * qualquer parte do código a gente pega o mesmo SistemaCentral com
+ * getInstancia() e mexe na mesma lista de hotéis e administradores - sem
+ * risco de cada tela criar a sua e os dados ficarem bagunçados.
  *
- * O padrão Singleton garante que todos os hotéis e administradores fiquem
- * num lugar só, sem risco de criar listas duplicadas em partes diferentes
- * do código.
- *
- * @author Caio Goncalves Vieira
  * @version 1.0
  */
 public class SistemaCentral {
@@ -26,17 +24,20 @@ public class SistemaCentral {
         administradores = new ArrayList<>();
     }
 
-    /**
-     * Ponto de acesso global. Na primeira chamada cria a instância;
-     * nas seguintes devolve a mesma.
-     *
-     * @return a instância única do SistemaCentral
-     */
+    // é por aqui que todo mundo pega o sistema. Na primeira vez cria,
+    // depois sempre devolve o mesmo objeto.
     public static SistemaCentral getInstancia() {
         if (instancia == null) {
             instancia = new SistemaCentral();
         }
         return instancia;
+    }
+
+    // a Persistencia chama isso na abertura: troca as listas vazias pelas que
+    // vieram do arquivo. Não chamem em outro lugar senão zera o que tá em memória.
+    public void restaurar(ArrayList<Hotel> hoteis, ArrayList<Administrador> administradores) {
+        this.hoteis = hoteis;
+        this.administradores = administradores;
     }
 
     /**

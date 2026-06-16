@@ -1,13 +1,15 @@
 package model;
 
+import java.io.Serializable;
+
 /**
- * Representa um quarto físico do hotel.
- * O status controla a disponibilidade para reservas.
+ * Um quarto de verdade do hotel. O que manda na hora de reservar é o status:
+ * se tá DISPONIVEL pode reservar, se tá OCUPADO ou em MANUTENCAO não aparece
+ * na busca.
  *
- * @author Caio Goncalves Vieira
  * @version 1.0
  */
-public class Quarto {
+public class Quarto implements Serializable {
 
     private int id;
     private int numero;
@@ -15,14 +17,7 @@ public class Quarto {
     private int capacidadeMaxima;
     private StatusQuarto status;
 
-    /**
-     * Todo quarto começa disponível quando é cadastrado.
-     *
-     * @param id               identificador único
-     * @param numero           número do quarto (ex: 101, 202)
-     * @param tipo             SOLTEIRO, CASAL ou SUITE
-     * @param capacidadeMaxima quantas pessoas cabem
-     */
+    // quando cadastra, o quarto já nasce DISPONIVEL - ninguém precisa setar isso na mão
     public Quarto(int id, int numero, TipoQuarto tipo, int capacidadeMaxima) {
         this.id = id;
         this.numero = numero;
@@ -31,18 +26,13 @@ public class Quarto {
         this.status = StatusQuarto.DISPONIVEL;
     }
 
-    /**
-     * Manda o quarto para manutenção.
-     * Enquanto estiver bloqueado, ele não aparece nas buscas.
-     */
+    // joga o quarto pra manutenção. Enquanto tiver assim, ele some das buscas.
     public void bloquear() {
         this.status = StatusQuarto.MANUTENCAO;
         System.out.println("Quarto " + numero + " bloqueado para manutenção.");
     }
 
-    /**
-     * Libera o quarto após o conserto.
-     */
+    // terminou o conserto, volta a ficar disponível
     public void desbloquear() {
         this.status = StatusQuarto.DISPONIVEL;
         System.out.println("Quarto " + numero + " liberado e disponível novamente.");
