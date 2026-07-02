@@ -245,9 +245,12 @@ public class HotelApp extends Application {
         tabelaReservas.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
         DatePicker entrada = new DatePicker(LocalDate.now());
+        entrada.setPrefWidth(160);
         DatePicker saida = new DatePicker(LocalDate.now().plusDays(1));
+        saida.setPrefWidth(160);
 
         Button criar = new Button("Criar reserva");
+        criar.setPrefWidth(120);
         criar.setOnAction(e -> {
             Hospede h = comboHospede.getValue();
             Quarto q = comboQuarto.getValue();

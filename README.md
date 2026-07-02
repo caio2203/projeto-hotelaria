@@ -332,29 +332,39 @@ a) ~~possibilidade de cadastro de dois ou mais quartos com o mesmo número e/ou
    com capacidade igual a 0 (zero)~~ — **corrigido**: o cadastro passou a
    rejeitar número de quarto duplicado e capacidade menor ou igual a zero;
 
-b) não indicação, quando for o caso, de que quarto já se encontra liberado ou
-   bloqueado;
+b) ~~não indicação, quando for o caso, de que quarto já se encontra liberado ou
+   bloqueado~~ — **corrigido**: ao tentar bloquear/liberar um quarto que já
+   está nesse estado, um alerta informa a situação;
 
-c) não confirmação de liberação ou bloqueio de quarto (sem atualização de
-   interface);
+c) ~~não confirmação de liberação ou bloqueio de quarto (sem atualização de
+   interface)~~ — **corrigido**: bloqueio e liberação exibem alerta de
+   confirmação e a tabela de quartos é atualizada na hora;
 
-d) não cálculo de taxa de ocupação;
+d) ~~não cálculo de taxa de ocupação~~ — **corrigido**: a taxa de ocupação é
+   calculada e exibida na aba de reservas;
 
-e) campos de data de início e término de reserva com tamanho reduzido (assim
-   como botão de confirmação de reserva);
+e) ~~campos de data de início e término de reserva com tamanho reduzido (assim
+   como botão de confirmação de reserva)~~ — **corrigido**: os campos de data
+   e o botão de criação de reserva ganharam largura fixa maior;
 
 f) ~~não atualização imediata de reserva após check-in~~ — **corrigido**: as
    tabelas de reservas e quartos são redesenhadas imediatamente após o
    check-in, mantendo a reserva selecionada com o novo status;
 
-g) possibilidade de cancelamento de reserva após realização de check-in;
+g) ~~possibilidade de cancelamento de reserva após realização de check-in~~ —
+   **corrigido**: o cancelamento só é aceito para reservas ainda PENDENTES;
+   após o check-in a operação é negada com aviso;
 
-h) não confirmação, quando for o caso, de inclusão em fila de reserva via
-   caixa de diálogo de alerta;
+h) ~~não confirmação, quando for o caso, de inclusão em fila de reserva via
+   caixa de diálogo de alerta~~ — **corrigido**: quando o quarto está
+   indisponível, um alerta confirma a inclusão do hóspede na fila de espera;
 
-i) não notificação, via caixa de diálogo de alerta, de disponibilidade de
-   quarto para hóspede em fila de reserva;
+i) ~~não notificação, via caixa de diálogo de alerta, de disponibilidade de
+   quarto para hóspede em fila de reserva~~ — **corrigido**: no check-out,
+   o próximo da fila é notificado via alerta e recebe o quarto liberado;
 
-j) aparente não definição de prazo de cancelamento;
+j) ~~aparente não definição de prazo de cancelamento~~ — **corrigido**:
+   cancelamento exige antecedência mínima de 24h da data de entrada;
 
-l) ausência de histórico de hospedagem de cada hóspede.
+l) ~~ausência de histórico de hospedagem de cada hóspede~~ — **corrigido**:
+   a aba de hóspedes exibe o histórico de estadias do hóspede selecionado.

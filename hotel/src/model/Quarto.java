@@ -30,6 +30,11 @@ public class Quarto implements Serializable {
 
     // joga o quarto pra manutenção. Enquanto tiver assim, ele some das buscas.
     public void bloquear() {
+        if (this.status == StatusQuarto.MANUTENCAO) {
+            new Alert(Alert.AlertType.INFORMATION,
+                    "Quarto " + numero + " já se encontra bloqueado para manutenção.").showAndWait();
+            return;
+        }
         this.status = StatusQuarto.MANUTENCAO;
         System.out.println("Quarto " + numero + " bloqueado para manutenção.");
         String msg = "Quarto " + numero + " bloqueado para manutenção.";
@@ -38,6 +43,11 @@ public class Quarto implements Serializable {
 
     // terminou o conserto, volta a ficar disponível
     public void desbloquear() {
+        if (this.status == StatusQuarto.DISPONIVEL) {
+            new Alert(Alert.AlertType.INFORMATION,
+                    "Quarto " + numero + " já se encontra liberado.").showAndWait();
+            return;
+        }
         this.status = StatusQuarto.DISPONIVEL;
         System.out.println("Quarto " + numero + " liberado e disponível novamente.");
         String msg = "Quarto " + numero + " liberado e disponível novamente.";
