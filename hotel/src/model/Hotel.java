@@ -181,16 +181,26 @@ public class Hotel implements Serializable {
      * @param reserva a reserva que está encerrando
      */
     public void realizarCheckOut(Reserva reserva) {
+        // 1. Guarda a referência do quarto antes de finalizar, para sabermos qual liberou
+        Quarto quartoLiberado = reserva.getQuarto();
+
+        // 2. Finaliza a estadia atual (muda o status do quarto para DISPONIVEL)
         reserva.finalizar();
 
-        // liberou um quarto, então vê se tem alguém na fila esperando vaga
+        // 3. Se tiver alguém na fila, passa a vaga do quarto para essa pessoa
         if (!filaEspera.isEmpty()) {
             Hospede proximoDaFila = filaEspera.poll();
+
+            LocalDate entrada = LocalDate.now();
+            LocalDate saida = entrada.plusDays(1);
+
+            // Chama o seu próprio método para criar a reserva para o novo hóspede!
+            this.criarReserva(proximoDaFila, quartoLiberado, entrada, saida);
+
             System.out.println("Notificação: " + proximoDaFila.getNome()
-                    + " da fila de espera — quarto " + reserva.getQuarto().getNumero() + " está disponível!");
+                    + " saiu da fila de espera e pegou o quarto " + quartoLiberado.getNumero());
         }
     }
-
     // -------------------------------------------------------------------------
     // Gestão de funcionários
     // -------------------------------------------------------------------------
@@ -223,6 +233,23 @@ public class Hotel implements Serializable {
         recepcionistas.add(recepcionista);
     }
 
+    // -------------------------------------------------------------------------
+    // Taxa de Ocupação
+    // -------------------------------------------------------------------------
+
+    public double getTaxaOcupacao() {
+        if (quartos == null || quartos.isEmpty()) {
+            return 0.0;
+        }
+
+        // Conta quantos quartos estão ocupados neste exato momento
+        long quartosOcupados = quartos.stream()
+                .filter(q -> q.getStatus() == StatusQuarto.OCUPADO)
+                .count();
+
+        // Calcula a porcentagem: (Ocupados / Total de Quartos) * 100
+        return ((double) quartosOcupados / quartos.size()) * 100;
+    }
     // -------------------------------------------------------------------------
     // Getters
     // -------------------------------------------------------------------------

@@ -51,6 +51,7 @@ public class HotelApp extends Application {
     private final ComboBox<Hospede> comboHospede = new ComboBox<>();
     private final ComboBox<Quarto> comboQuarto = new ComboBox<>();
     private final Label labelFila = new Label();
+    private final Label labelOcupacao = new Label();
 
     @Override
     public void start(Stage stage) {
@@ -179,6 +180,15 @@ public class HotelApp extends Application {
                 erro("Informe ao menos nome e CPF.");
                 return;
             }
+
+            boolean cpfJaExiste = hotel.getHospedes().stream()
+                    .anyMatch(h -> h.getCpf().equalsIgnoreCase(cpf));
+
+            if (cpfJaExiste) {
+                erro("Já existe um hóspede cadastrado com o CPF: " + cpf);
+                return;
+            }
+
             // login/senha a gente gera automático por enquanto - quando tiver
             // tela de login (parte do Luis/Andrei) dá pra pedir isso direito
             int id = hotel.getHospedes().size() + 1;
@@ -255,7 +265,8 @@ public class HotelApp extends Application {
         HBox form = new HBox(8, comboHospede, comboQuarto, entrada, saida, criar);
         HBox acoes = new HBox(8, checkin, checkout, cancelar);
         labelFila.setStyle("-fx-font-weight: bold;");
-        VBox box = new VBox(10, tabelaReservas, form, acoes, labelFila);
+        labelOcupacao.setStyle("-fx-font-weight: bold;");
+        VBox box = new VBox(10, tabelaReservas, form, acoes, labelFila, labelOcupacao);
         box.setPadding(new Insets(12));
 
         BorderPane root = new BorderPane(box);
@@ -300,6 +311,7 @@ public class HotelApp extends Application {
         tabelaReservas.refresh();
         tabelaQuartos.refresh();
         labelFila.setText("Fila de espera: " + hotel.getFilaEspera().size() + " hóspede(s)");
+        labelOcupacao.setText(String.format("Taxa de ocupação atual: %.2f%%", hotel.getTaxaOcupacao()));
     }
 
     private void erro(String msg) {
