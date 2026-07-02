@@ -60,6 +60,7 @@ public class HotelApp extends Application {
     private final ComboBox<Hospede> comboHospede = new ComboBox<>();
     private final ComboBox<Quarto> comboQuarto = new ComboBox<>();
     private final Label labelFila = new Label();
+    private final Label labelOcupacao = new Label();
 
     @Override
     public void start(Stage stage) {
@@ -117,6 +118,22 @@ public class HotelApp extends Application {
                     erro("Selecione o tipo do quarto.");
                     return;
                 }
+
+                // CORREÇÃO: Impede criar quarto com capacidade zero ou negativa
+                if (cap <= 0) {
+                    erro("A capacidade do quarto deve ser maior que zero.");
+                    return;
+                }
+
+                // CORREÇÃO: Verifica se já existe um quarto com o mesmo número
+                boolean numeroJaExiste = hotel.getQuartos().stream()
+                        .anyMatch(q -> q.getNumero() == numero);
+
+                if (numeroJaExiste) {
+                    erro("Já existe um quarto cadastrado com o número " + numero + ".");
+                    return;
+                }
+
                 hotel.adicionarQuarto(new Quarto(hotel.getQuartos().size() + 1, numero, tipo, cap));
                 campoNumero.clear();
                 campoCap.clear();
@@ -180,6 +197,15 @@ public class HotelApp extends Application {
                 erro("Informe ao menos nome e CPF.");
                 return;
             }
+
+            boolean cpfJaExiste = hotel.getHospedes().stream()
+                    .anyMatch(h -> h.getCpf().equalsIgnoreCase(cpf));
+
+            if (cpfJaExiste) {
+                erro("Já existe um hóspede cadastrado com o CPF: " + cpf);
+                return;
+            }
+
             // login/senha a gente gera automático por enquanto - quando tiver
             // tela de login (parte do Luis/Andrei) dá pra pedir isso direito
             int id = hotel.getHospedes().size() + 1;
@@ -243,7 +269,8 @@ public class HotelApp extends Application {
         HBox form = new HBox(8, comboHospede, comboQuarto, entrada, saida, criar);
         HBox acoes = new HBox(8, checkin, checkout, cancelar);
         labelFila.setStyle("-fx-font-weight: bold;");
-        VBox box = new VBox(10, tabelaReservas, form, acoes, labelFila);
+        labelOcupacao.setStyle("-fx-font-weight: bold;");
+        VBox box = new VBox(10, tabelaReservas, form, acoes, labelFila, labelOcupacao);
         box.setPadding(new Insets(12));
 
         BorderPane root = new BorderPane(box);
@@ -282,6 +309,7 @@ public class HotelApp extends Application {
         comboHospede.setItems(FXCollections.observableArrayList(hotel.getHospedes()));
         comboQuarto.setItems(FXCollections.observableArrayList(hotel.getQuartos()));
         labelFila.setText("Fila de espera: " + hotel.getFilaEspera().size() + " hóspede(s)");
+        labelOcupacao.setText(String.format("Taxa de ocupação atual: %.2f%%", hotel.getTaxaOcupacao()));
     }
 
     private void erro(String msg) {
