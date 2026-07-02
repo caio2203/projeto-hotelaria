@@ -69,7 +69,7 @@ public class HotelApp extends Application {
 
         atualizarTudo();
 
-        Scene scene = new Scene(abas, 820, 560);
+        Scene scene = new Scene(abas, 1000, 700);
         stage.setTitle("Sistema de Reservas — " + hotel.getNome());
         stage.setScene(scene);
         stage.show();
@@ -262,8 +262,8 @@ public class HotelApp extends Application {
             }
         }));
 
-        HBox form = new HBox(8, comboHospede, comboQuarto, entrada, saida, criar);
-        HBox acoes = new HBox(8, checkin, checkout, cancelar);
+        HBox form = new HBox(8, comboHospede, comboQuarto);
+        HBox acoes = new HBox(8, checkin, checkout, cancelar, criar , entrada, saida);
         labelFila.setStyle("-fx-font-weight: bold;");
         labelOcupacao.setStyle("-fx-font-weight: bold;");
         VBox box = new VBox(10, tabelaReservas, form, acoes, labelFila, labelOcupacao);
@@ -315,7 +315,7 @@ public class HotelApp extends Application {
     }
 
     private void erro(String msg) {
-        new Alert(Alert.AlertType.WARNING, msg).showAndWait();
+        new Alert(Alert.AlertType.ERROR, msg).showAndWait();
     }
 
     // só roda na primeiríssima vez, quando ainda não existe arquivo salvo.

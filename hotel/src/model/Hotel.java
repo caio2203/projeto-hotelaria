@@ -1,5 +1,7 @@
 package model;
 
+import javafx.scene.control.Alert;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -14,7 +16,7 @@ import java.util.Queue;
  * Sobre as coleções (tudo java.util):
  * - ArrayList pra quartos, reservas e hóspedes, porque a gente percorre muito;
  * - Queue (LinkedList) pra fila de espera, que é FIFO mesmo: quem pediu primeiro
- *   é o primeiro a ser chamado quando libera um quarto.
+ * é o primeiro a ser chamado quando libera um quarto.
  *
  * @version 1.0
  */
@@ -63,6 +65,8 @@ public class Hotel implements Serializable {
     public void adicionarQuarto(Quarto quarto) {
         quartos.add(quarto);
         System.out.println("Quarto " + quarto.getNumero() + " adicionado ao hotel " + nome);
+        String msg = "Quarto " + quarto.getNumero() + " adicionado ao hotel " + nome;
+        new Alert(Alert.AlertType.INFORMATION, msg).showAndWait();
     }
 
     /**
@@ -72,6 +76,8 @@ public class Hotel implements Serializable {
      */
     public void adicionarHospede(Hospede hospede) {
         hospedes.add(hospede);
+        String msg = "Hospede "+hospede.toString()+" foi adicionado";
+        new Alert(Alert.AlertType.INFORMATION, msg).showAndWait();
     }
 
     public ArrayList<Hospede> getHospedes() {
@@ -150,10 +156,14 @@ public class Hotel implements Serializable {
             Reserva novaReserva = new Reserva(contadorReservas++, hospede, quarto, entrada, saida);
             adicionarReserva(novaReserva);
             System.out.println("Reserva criada com sucesso: " + novaReserva);
+            String msg = "Reserva criada com sucesso: " + novaReserva;
+            new Alert(Alert.AlertType.INFORMATION, msg).showAndWait();
             return novaReserva;
         } else {
             filaEspera.add(hospede);
             System.out.println(hospede.getNome() + " adicionado à fila de espera do hotel " + nome);
+            String msg = hospede.getNome() + " adicionado à fila de espera do hotel " + nome;
+            new Alert(Alert.AlertType.INFORMATION, msg).showAndWait();
             return null;
         }
     }
@@ -172,6 +182,8 @@ public class Hotel implements Serializable {
     // mantive o método aqui pra tela conversar sempre com o hotel, não com a reserva.
     public void realizarCheckIn(Reserva reserva) {
         reserva.realizarCheckIn();
+        String msg = "Foi feito o checkin na reserva :"+reserva.toString();
+        new Alert(Alert.AlertType.INFORMATION, msg).showAndWait();
     }
 
     /**
@@ -186,6 +198,8 @@ public class Hotel implements Serializable {
 
         // 2. Finaliza a estadia atual (muda o status do quarto para DISPONIVEL)
         reserva.finalizar();
+        String msg = "Foi feito o checkout na reserva: " + reserva;
+        new Alert(Alert.AlertType.INFORMATION, msg).showAndWait();
 
         // 3. Se tiver alguém na fila, passa a vaga do quarto para essa pessoa
         if (!filaEspera.isEmpty()) {
@@ -194,11 +208,12 @@ public class Hotel implements Serializable {
             LocalDate entrada = LocalDate.now();
             LocalDate saida = entrada.plusDays(1);
 
-            // Chama o seu próprio método para criar a reserva para o novo hóspede!
             this.criarReserva(proximoDaFila, quartoLiberado, entrada, saida);
 
-            System.out.println("Notificação: " + proximoDaFila.getNome()
-                    + " saiu da fila de espera e pegou o quarto " + quartoLiberado.getNumero());
+            msg = "Notificação: " + proximoDaFila.getNome()
+                    + " saiu da fila de espera e pegou o quarto " + quartoLiberado.getNumero();
+            System.out.println(msg);
+            new Alert(Alert.AlertType.INFORMATION, msg).showAndWait();
         }
     }
     // -------------------------------------------------------------------------
