@@ -1,5 +1,7 @@
 package model;
 
+import javafx.scene.control.Alert;
+
 import java.io.Serializable;
 
 /**
@@ -30,12 +32,16 @@ public class Quarto implements Serializable {
     public void bloquear() {
         this.status = StatusQuarto.MANUTENCAO;
         System.out.println("Quarto " + numero + " bloqueado para manutenção.");
+        String msg = "Quarto " + numero + " bloqueado para manutenção.";
+        new Alert(Alert.AlertType.WARNING, msg).showAndWait();
     }
 
     // terminou o conserto, volta a ficar disponível
     public void desbloquear() {
         this.status = StatusQuarto.DISPONIVEL;
         System.out.println("Quarto " + numero + " liberado e disponível novamente.");
+        String msg = "Quarto " + numero + " liberado e disponível novamente.";
+        new Alert(Alert.AlertType.INFORMATION, msg).showAndWait();
     }
 
     public int getId() {

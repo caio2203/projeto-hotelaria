@@ -1,5 +1,7 @@
 package model;
 
+import javafx.scene.control.Alert;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -62,6 +64,8 @@ public class Reserva implements Serializable {
         this.status = StatusReserva.EM_ANDAMENTO;
         this.quarto.setStatus(StatusQuarto.OCUPADO);
         System.out.println("Check-in realizado: " + hospede.getNome() + " no quarto " + quarto.getNumero());
+        String msg = "Check-in realizado: " + hospede.getNome() + " no quarto " + quarto.getNumero();
+        new Alert(Alert.AlertType.INFORMATION, msg).showAndWait();
     }
 
     // cancela e já solta o quarto na hora. Tanto faz se a reserva tava
@@ -70,6 +74,8 @@ public class Reserva implements Serializable {
         this.status = StatusReserva.CANCELADA;
         this.quarto.setStatus(StatusQuarto.DISPONIVEL);
         System.out.println("Reserva #" + id + " cancelada. Quarto " + quarto.getNumero() + " liberado.");
+        String msg = "Reserva #" + id + " cancelada. Quarto " + quarto.getNumero() + " liberado.";
+        new Alert(Alert.AlertType.WARNING, msg).showAndWait();
     }
 
     // check-out: encerra a estadia, libera o quarto e joga a reserva no
@@ -79,6 +85,8 @@ public class Reserva implements Serializable {
         this.quarto.setStatus(StatusQuarto.DISPONIVEL);
         this.hospede.adicionarAoHistorico(this);
         System.out.println("Check-out realizado: " + hospede.getNome() + " deixou o quarto " + quarto.getNumero());
+        String msg = "Check-out realizado: " + hospede.getNome() + " deixou o quarto " + quarto.getNumero();
+        new Alert(Alert.AlertType.INFORMATION, msg).showAndWait();
     }
 
     public int getId() {
