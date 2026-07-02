@@ -15,6 +15,7 @@ import java.time.format.DateTimeFormatter;
 public class Reserva implements Serializable {
 
     private static final DateTimeFormatter FORMATO_DATA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private static final int PRAZO_CANCELAMENTO_DIAS = 2;
 
     private int id;
     private LocalDate dataEntrada;
@@ -43,7 +44,7 @@ public class Reserva implements Serializable {
 
     /**
      * Diz se o período passado encosta no período desta reserva (mesmo quarto).
-     *
+     * <p>
      * O truque dos dois intervalos: [A,B] e [C,D] se cruzam quando C não passa
      * de B E A não passa de D. Testei com datas coladas e funciona, mas se
      * alguém achar um caso de borda esquisito me avisa.
@@ -69,8 +70,27 @@ public class Reserva implements Serializable {
     public void cancelar() {
         this.status = StatusReserva.CANCELADA;
         this.quarto.setStatus(StatusQuarto.DISPONIVEL);
-        System.out.println("Reserva #" + id + " cancelada. Quarto " + quarto.getNumero() + " liberado.");
+
+        if (isCancelamentoGratuito()) {
+            System.out.println("Reserva #" + id + " cancelada gratuitamente dentro do prazo. Quarto " + quarto.getNumero() + " liberado."); //[cite: 7]
+        } else {
+            System.out.println("Reserva #" + id + " cancelada FORA do prazo. Quarto " + quarto.getNumero() + " liberado. Taxa de no-show aplicavel."); //[cite: 7]
+        }
     }
+
+    public boolean isCancelamentoGratuito() {
+        // Se a reserva já começou ou foi concluída, não há cancelamento gratuito
+        if (this.status == StatusReserva.EM_ANDAMENTO || this.status == StatusReserva.CONCLUIDA) { //[cite: 7, 10]
+            return false;
+        }
+
+        LocalDate hoje = LocalDate.now();
+        // Verifica se a data de hoje está pelo menos 2 dias atrás da data de entrada
+        return hoje.isBefore(this.dataEntrada.minusDays(PRAZO_CANCELAMENTO_DIAS)) ||
+                hoje.isEqual(this.dataEntrada.minusDays(PRAZO_CANCELAMENTO_DIAS));
+    }
+
+
 
     // check-out: encerra a estadia, libera o quarto e joga a reserva no
     // histórico do hóspede (a pilha). É o finalizar que empurra pra Stack.
