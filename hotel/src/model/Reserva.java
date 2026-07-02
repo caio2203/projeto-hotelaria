@@ -45,7 +45,7 @@ public class Reserva implements Serializable {
 
     /**
      * Diz se o período passado encosta no período desta reserva (mesmo quarto).
-     *
+     * <p>
      * O truque dos dois intervalos: [A,B] e [C,D] se cruzam quando C não passa
      * de B E A não passa de D. Testei com datas coladas e funciona, mas se
      * alguém achar um caso de borda esquisito me avisa.

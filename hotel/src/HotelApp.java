@@ -47,6 +47,7 @@ public class HotelApp extends Application {
     private final TableView<Quarto> tabelaQuartos = new TableView<>();
     private final TableView<Hospede> tabelaHospedes = new TableView<>();
     private final TableView<Reserva> tabelaReservas = new TableView<>();
+    private final TableView<Reserva> tabelaHistorico = new TableView<>();
 
     private final ComboBox<Hospede> comboHospede = new ComboBox<>();
     private final ComboBox<Quarto> comboQuarto = new ComboBox<>();
@@ -161,24 +162,43 @@ public class HotelApp extends Application {
     // -------------------------------------------------------------------------
 
     private Tab abaHospedes() {
-        coluna(tabelaHospedes, "Nome", Hospede::getNome);
-        coluna(tabelaHospedes, "CPF", Hospede::getCpf);
-        coluna(tabelaHospedes, "Contato", Hospede::getContato);
+        // Configuração da Tabela Principal de Hóspedes
+        coluna(tabelaHospedes, "Nome", Hospede::getNome); //
+        coluna(tabelaHospedes, "CPF", Hospede::getCpf); //
+        coluna(tabelaHospedes, "Contato", Hospede::getContato); //
+        tabelaHospedes.getSelectionModel().setSelectionMode(SelectionMode.SINGLE); //
 
-        TextField campoNome = new TextField();
-        campoNome.setPromptText("Nome");
-        TextField campoCpf = new TextField();
-        campoCpf.setPromptText("CPF");
-        TextField campoContato = new TextField();
-        campoContato.setPromptText("Contato");
+        // Configuração da Nova Tabela de Histórico de Hospedagens
+        coluna(tabelaHistorico, "Reserva #", r -> String.valueOf(r.getId())); //[cite: 13]
+        coluna(tabelaHistorico, "Quarto", r -> String.valueOf(r.getQuarto().getNumero())); //[cite: 13]
+        coluna(tabelaHistorico, "Período", r -> r.getDataEntrada().format(FMT) + " → " + r.getDataSaida().format(FMT)); //[cite: 13]
+        coluna(tabelaHistorico, "Status Final", r -> r.getStatus().toString()); //[cite: 13]
 
-        Button adicionar = new Button("Cadastrar hóspede");
-        adicionar.setOnAction(e -> {
-            String nome = campoNome.getText().trim();
-            String cpf = campoCpf.getText().trim();
-            if (nome.isEmpty() || cpf.isEmpty()) {
-                erro("Informe ao menos nome e CPF.");
-                return;
+        // Evento: Quando clicar em um hóspede, carrega o histórico dele na tabela de baixo
+        tabelaHospedes.getSelectionModel().selectedItemProperty().addListener((obs, antigo, novoHospede) -> {
+            if (novoHospede != null) {
+                // Criamos uma lista a partir da Stack do hóspede para exibir na tabela
+                tabelaHistorico.setItems(FXCollections.observableArrayList(novoHospede.getHistorico()));
+            } else {
+                tabelaHistorico.getItems().clear();
+            }
+        });
+
+        // Formulário de Cadastro Existente
+        TextField campoNome = new TextField(); //[cite: 13]
+        campoNome.setPromptText("Nome"); //[cite: 13]
+        TextField campoCpf = new TextField(); //[cite: 13]
+        campoCpf.setPromptText("CPF"); //[cite: 13]
+        TextField campoContato = new TextField(); //[cite: 13]
+        campoContato.setPromptText("Contato"); //[cite: 13]
+
+        Button adicionar = new Button("Cadastrar hóspede"); //[cite: 13]
+        adicionar.setOnAction(e -> { //[cite: 13]
+            String nome = campoNome.getText().trim(); //[cite: 13]
+            String cpf = campoCpf.getText().trim(); //[cite: 13]
+            if (nome.isEmpty() || cpf.isEmpty()) { //[cite: 13]
+                erro("Informe ao menos nome e CPF."); //[cite: 13]
+                return; //[cite: 13]
             }
 
             boolean cpfJaExiste = hotel.getHospedes().stream()
@@ -191,25 +211,30 @@ public class HotelApp extends Application {
 
             // login/senha a gente gera automático por enquanto - quando tiver
             // tela de login (parte do Luis/Andrei) dá pra pedir isso direito
-            int id = hotel.getHospedes().size() + 1;
-            hotel.adicionarHospede(new Hospede(id, nome, "hospede" + id, "123",
-                    cpf, campoContato.getText().trim()));
-            campoNome.clear();
-            campoCpf.clear();
-            campoContato.clear();
-            atualizarTudo();
+            int id = hotel.getHospedes().size() + 1; //[cite: 13]
+            hotel.adicionarHospede(new Hospede(id, nome, "hospede" + id, "123", //[cite: 13]
+                    cpf, campoContato.getText().trim())); //[cite: 13]
+            campoNome.clear(); //[cite: 13]
+            campoCpf.clear(); //[cite: 13]
+            campoContato.clear(); //[cite: 13]
+            atualizarTudo(); //[cite: 13]
         });
 
-        HBox form = new HBox(8, campoNome, campoCpf, campoContato, adicionar);
-        VBox box = new VBox(10, tabelaHospedes, form);
-        box.setPadding(new Insets(12));
-        return new Tab("Hóspedes", box);
+        HBox form = new HBox(8, campoNome, campoCpf, campoContato, adicionar); //[cite: 13]
+
+        // Títulos visuais para organizar a tela
+        Label labelLista = new Label("Lista de Hóspedes Cadastrados");
+        labelLista.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+
+        Label labelHistorico = new Label("Histórico de Estadias (Selecionar um hóspede acima)");
+        labelHistorico.setStyle("-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #555;");
+
+        // Adiciona todos os elementos verticalmente no painel
+        VBox box = new VBox(10, labelLista, tabelaHospedes, form, labelHistorico, tabelaHistorico); //[cite: 13]
+        box.setPadding(new Insets(12)); //[cite: 13]
+
+        return new Tab("Hóspedes", box); //[cite: 13]
     }
-
-    // -------------------------------------------------------------------------
-    // Aba: Reservas
-    // -------------------------------------------------------------------------
-
     private Tab abaReservas() {
         coluna(tabelaReservas, "#", r -> String.valueOf(r.getId()));
         coluna(tabelaReservas, "Hóspede", r -> r.getHospede().getNome());
@@ -312,6 +337,8 @@ public class HotelApp extends Application {
         tabelaQuartos.refresh();
         labelFila.setText("Fila de espera: " + hotel.getFilaEspera().size() + " hóspede(s)");
         labelOcupacao.setText(String.format("Taxa de ocupação atual: %.2f%%", hotel.getTaxaOcupacao()));
+
+        tabelaHistorico.getItems().clear(); // Limpa o histórico visual para evitar dados fantasmas ao recarregar
     }
 
     private void erro(String msg) {
