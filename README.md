@@ -275,8 +275,9 @@ Atende o requisito **(b)** do enunciado. Está em `model/Persistencia.java`.
 - Ao **fechar** a janela (`stop()`), chamamos `Persistencia.salvar(...)`, que
   grava o arquivo **`hotel-dados.ser`** na pasta onde o programa roda.
 - Ao **abrir** (`start()`), chamamos `Persistencia.carregar(...)`. Se o arquivo
-  existe, recupera os dados; se é a primeira execução (sem arquivo), populamos
-  alguns dados de exemplo para a tela não abrir vazia.
+  existe, recupera os dados; se é a primeira execução (sem arquivo), o sistema
+  cria apenas o hotel vazio — quartos, hóspedes e reservas são cadastrados
+  pelo usuário na interface.
 
 > Quer começar do zero? Apague o arquivo `hotel-dados.ser` e abra o app de novo.
 
