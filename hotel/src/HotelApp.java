@@ -28,7 +28,8 @@ import model.*;
  * Tela principal do sistema (JavaFX). É por aqui que a aplicação sobe.
  *
  * Pessoal: quando o app abre ele tenta ler o arquivo salvo; se não existir
- * (primeira vez), a gente popula uns dados de exemplo no semearDadosIniciais().
+ * (primeira vez), o semearDadosIniciais() cria só o hotel vazio - o resto
+ * o usuário cadastra pela interface.
  * Quando fecha a janela, o stop() salva tudo de novo. Tá tudo em java.util
  * (ArrayList/Stack/Queue), nada de estrutura feita na mão aqui.
  *
@@ -349,19 +350,10 @@ public class HotelApp extends Application {
     }
 
     // só roda na primeiríssima vez, quando ainda não existe arquivo salvo.
-    // serve pra não abrir o sistema completamente vazio na hora de apresentar.
+    // cria apenas o hotel vazio: quartos, hóspedes e reservas ficam por conta
+    // do usuário, direto pela interface.
     private void semearDadosIniciais() {
-        Administrador gerente = new Administrador(1, "Ana Souza", "ana.gerente", "senha123", NivelAcesso.GERENTE);
-        sistema.adicionarAdministrador(gerente);
-
-        Hotel h = new Hotel(1, "Grand Palace", "Vitória da Conquista - BA");
-        h.setGerente(gerente);
-        h.adicionarQuarto(new Quarto(1, 101, TipoQuarto.SOLTEIRO, 1));
-        h.adicionarQuarto(new Quarto(2, 102, TipoQuarto.CASAL, 2));
-        h.adicionarQuarto(new Quarto(3, 201, TipoQuarto.SUITE, 4));
-        h.adicionarHospede(new Hospede(1, "Carlos Pereira", "carlos.p", "abc123", "123.456.789-00", "(77) 99999-1111"));
-        h.adicionarHospede(new Hospede(2, "Fernanda Costa", "ferna.c", "xyz789", "987.654.321-00", "(77) 98888-2222"));
-        sistema.adicionarHotel(h);
+        sistema.adicionarHotel(new Hotel(1, "Grand Palace", "Vitória da Conquista - BA"));
     }
 
     public static void main(String[] args) {

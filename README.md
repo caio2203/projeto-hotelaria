@@ -322,7 +322,9 @@ deixe a IDE importar como projeto Maven.
 
 ### Notas
 
-a) definição de quartos iniciais em caso de não recuperação de arquivo;
+a) em caso de não recuperação de arquivo, o sistema inicia apenas com o hotel
+   vazio — quartos, hóspedes e reservas são cadastrados pelo usuário na
+   interface;
 
 b) não uso de arquivos `.fxml`.
 
