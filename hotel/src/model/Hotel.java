@@ -195,6 +195,25 @@ public class Hotel implements Serializable {
     // Gestão de funcionários
     // -------------------------------------------------------------------------
 
+    /**
+     * Tenta cancelar a reserva chamando a regra de negócio da classe Reserva.
+     * Se o quarto for liberado, notifica o próximo da fila de espera.
+     *
+     * @param reserva a reserva que o hóspede deseja cancelar
+     */
+    public void cancelarReserva(Reserva reserva) {
+        boolean canceladoComSucesso = reserva.cancelar();
+
+        if (canceladoComSucesso) {
+            // O quarto vagou! Vamos olhar a fila de espera.
+            if (!filaEspera.isEmpty()) {
+                Hospede proximoDaFila = filaEspera.poll();
+                System.out.println("Notificação para fila: " + proximoDaFila.getNome()
+                        + ", o quarto " + reserva.getQuarto().getNumero() + " está disponível devido a um cancelamento!");
+            }
+        }
+    }
+
     public void setGerente(Administrador gerente) {
         this.gerente = gerente;
         System.out.println(gerente.getNome() + " definido como gerente do hotel " + nome);

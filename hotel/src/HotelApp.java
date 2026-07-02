@@ -22,16 +22,7 @@ import javafx.stage.Stage;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import model.Administrador;
-import model.Hospede;
-import model.Hotel;
-import model.NivelAcesso;
-import model.Persistencia;
-import model.Quarto;
-import model.Reserva;
-import model.SistemaCentral;
-import model.StatusQuarto;
-import model.TipoQuarto;
+import model.*;
 
 /**
  * Tela principal do sistema (JavaFX). É por aqui que a aplicação sobe.
@@ -246,7 +237,20 @@ public class HotelApp extends Application {
         checkout.setOnAction(e -> comReservaSelecionada(r -> hotel.realizarCheckOut(r)));
 
         Button cancelar = new Button("Cancelar");
-        cancelar.setOnAction(e -> comReservaSelecionada(Reserva::cancelar));
+        cancelar.setOnAction(e -> comReservaSelecionada(r -> {
+            // Guarda o status antes para saber se mudou
+            StatusReserva statusAntigo = r.getStatus();
+
+            // Chama o método do hotel que gere o cancelamento e a fila
+            hotel.cancelarReserva(r);
+
+            // Verifica se o cancelamento foi bem-sucedido
+            if (r.getStatus() == StatusReserva.CANCELADA && statusAntigo != StatusReserva.CANCELADA) {
+                new Alert(Alert.AlertType.INFORMATION, "Reserva #" + r.getId() + " cancelada com sucesso!").showAndWait();
+            } else {
+                erro("Não foi possível cancelar: o prazo de 24h expirou ou a reserva já não está pendente.");
+            }
+        }));
 
         HBox form = new HBox(8, comboHospede, comboQuarto, entrada, saida, criar);
         HBox acoes = new HBox(8, checkin, checkout, cancelar);

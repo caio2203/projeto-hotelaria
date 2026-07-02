@@ -63,13 +63,30 @@ public class Reserva implements Serializable {
         this.quarto.setStatus(StatusQuarto.OCUPADO);
         System.out.println("Check-in realizado: " + hospede.getNome() + " no quarto " + quarto.getNumero());
     }
+    /**
+     * Cancela a reserva apenas se solicitada com pelo menos 24h de antecedência
+     * (1 dia antes da data de entrada) e se ainda não foi feito check-in.
+     * * @return true se o cancelamento foi bem-sucedido, false caso contrário.
+     */
+    public boolean cancelar() {
+        LocalDate dataAtual = LocalDate.now();
 
-    // cancela e já solta o quarto na hora. Tanto faz se a reserva tava
-    // pendente ou em andamento, funciona pros dois casos.
-    public void cancelar() {
-        this.status = StatusReserva.CANCELADA;
-        this.quarto.setStatus(StatusQuarto.DISPONIVEL);
-        System.out.println("Reserva #" + id + " cancelada. Quarto " + quarto.getNumero() + " liberado.");
+        // Verifica se a reserva já não passou do check-in
+        if (this.status != StatusReserva.PENDENTE) {
+            System.out.println("Falha: A reserva #" + id + " já está " + this.status + ".");
+            return false;
+        }
+
+        // isBefore garante que a data atual é estritamente anterior à data de entrada (mínimo 24h)
+        if (dataAtual.isBefore(this.dataEntrada)) {
+            this.status = StatusReserva.CANCELADA;
+            this.quarto.setStatus(StatusQuarto.DISPONIVEL);
+            System.out.println("Reserva #" + id + " cancelada. Quarto " + quarto.getNumero() + " liberado.");
+            return true;
+        } else {
+            System.out.println("Cancelamento negado para reserva #" + id + ": prazo de 24 horas expirou.");
+            return false;
+        }
     }
 
     // check-out: encerra a estadia, libera o quarto e joga a reserva no
