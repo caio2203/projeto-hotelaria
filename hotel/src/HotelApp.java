@@ -117,6 +117,14 @@ public class HotelApp extends Application {
                     erro("Selecione o tipo do quarto.");
                     return;
                 }
+                if (cap <= 0) {
+                    erro("A capacidade deve ser maior que zero.");
+                    return;
+                }
+                if (hotel.getQuartos().stream().anyMatch(q -> q.getNumero() == numero)) {
+                    erro("Já existe um quarto com o número " + numero + ".");
+                    return;
+                }
                 hotel.adicionarQuarto(new Quarto(hotel.getQuartos().size() + 1, numero, tipo, cap));
                 campoNumero.clear();
                 campoCap.clear();
@@ -258,6 +266,8 @@ public class HotelApp extends Application {
         }
         acao.accept(r);
         atualizarTudo();
+        // reseleciona a mesma reserva pra linha continuar visível já com o status novo
+        tabelaReservas.getSelectionModel().select(r);
     }
 
     // -------------------------------------------------------------------------
@@ -281,6 +291,10 @@ public class HotelApp extends Application {
         tabelaReservas.setItems(FXCollections.observableArrayList(hotel.getReservas()));
         comboHospede.setItems(FXCollections.observableArrayList(hotel.getHospedes()));
         comboQuarto.setItems(FXCollections.observableArrayList(hotel.getQuartos()));
+        // força o redesenho das células na hora (sem depender de troca de foco),
+        // pra reserva e quarto refletirem o status novo logo após o check-in
+        tabelaReservas.refresh();
+        tabelaQuartos.refresh();
         labelFila.setText("Fila de espera: " + hotel.getFilaEspera().size() + " hóspede(s)");
     }
 

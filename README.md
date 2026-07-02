@@ -328,8 +328,9 @@ b) não uso de arquivos `.fxml`.
 
 ### Ressalvas
 
-a) possibilidade de cadastro de dois ou mais quartos com o mesmo número e/ou
-   com capacidade igual a 0 (zero);
+a) ~~possibilidade de cadastro de dois ou mais quartos com o mesmo número e/ou
+   com capacidade igual a 0 (zero)~~ — **corrigido**: o cadastro passou a
+   rejeitar número de quarto duplicado e capacidade menor ou igual a zero;
 
 b) não indicação, quando for o caso, de que quarto já se encontra liberado ou
    bloqueado;
@@ -342,7 +343,9 @@ d) não cálculo de taxa de ocupação;
 e) campos de data de início e término de reserva com tamanho reduzido (assim
    como botão de confirmação de reserva);
 
-f) não atualização imediata de reserva após check-in;
+f) ~~não atualização imediata de reserva após check-in~~ — **corrigido**: as
+   tabelas de reservas e quartos são redesenhadas imediatamente após o
+   check-in, mantendo a reserva selecionada com o novo status;
 
 g) possibilidade de cancelamento de reserva após realização de check-in;
 
