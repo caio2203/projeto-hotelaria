@@ -23,6 +23,7 @@ fechar e recuperados ao abrir — **sem banco de dados**.
 7. [Como os dados são salvos (persistência)](#7-como-os-dados-são-salvos)
 8. [Coleções genéricas usadas](#8-coleções-genéricas-usadas)
 9. [Problemas comuns do JavaFX](#9-problemas-comuns-do-javafx)
+10. [Notas e ressalvas](#10-notas-e-ressalvas)
 
 ---
 
@@ -314,3 +315,43 @@ deixe a IDE importar como projeto Maven.
 
 **A primeira execução está demorando muito**
 → Normal: o Maven está baixando o JavaFX. Da segunda vez em diante é rápido.
+
+---
+
+## 10. Notas e ressalvas
+
+### Notas
+
+a) definição de quartos iniciais em caso de não recuperação de arquivo;
+
+b) não uso de arquivos `.fxml`.
+
+### Ressalvas
+
+a) possibilidade de cadastro de dois ou mais quartos com o mesmo número e/ou
+   com capacidade igual a 0 (zero);
+
+b) não indicação, quando for o caso, de que quarto já se encontra liberado ou
+   bloqueado;
+
+c) não confirmação de liberação ou bloqueio de quarto (sem atualização de
+   interface);
+
+d) não cálculo de taxa de ocupação;
+
+e) campos de data de início e término de reserva com tamanho reduzido (assim
+   como botão de confirmação de reserva);
+
+f) não atualização imediata de reserva após check-in;
+
+g) possibilidade de cancelamento de reserva após realização de check-in;
+
+h) não confirmação, quando for o caso, de inclusão em fila de reserva via
+   caixa de diálogo de alerta;
+
+i) não notificação, via caixa de diálogo de alerta, de disponibilidade de
+   quarto para hóspede em fila de reserva;
+
+j) aparente não definição de prazo de cancelamento;
+
+l) ausência de histórico de hospedagem de cada hóspede.
